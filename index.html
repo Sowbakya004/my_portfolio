@@ -9,6 +9,48 @@
       rel="stylesheet"
     />
     <style>
+      /* ----- CSS variables for light/dark themes ----- */
+      :root {
+        --bg-primary: #101f1a;
+        --bg-secondary: #1a3a30;
+        --text-primary: #d0e6dc;
+        --text-secondary: #bde6d8;
+        --heading-color: #dcfae7;
+        --card-bg: rgba(20, 45, 35, 0.7);
+        --card-border: #2e7b64;
+        --skill-bg: rgba(18, 45, 34, 0.9);
+        --skill-border: #3f8b70;
+        --nav-bg: rgba(10, 25, 20, 0.85);
+        --nav-border: #2b6b55;
+        --accent: #6ed6b0;
+        --accent-light: #b3ffe0;
+        --badge-bg: #1e4a3a;
+        --badge-border: #4f9e83;
+        --contact-border: #2b6b55;
+        --shadow-color: #030b08;
+      }
+
+      /* Light theme variables */
+      [data-theme="light"] {
+        --bg-primary: #e8f3ee;
+        --bg-secondary: #c0e0d4;
+        --text-primary: #1a3a30;
+        --text-secondary: #2b5f4a;
+        --heading-color: #0f3d2e;
+        --card-bg: rgba(200, 230, 220, 0.8);
+        --card-border: #3f8b70;
+        --skill-bg: rgba(190, 220, 210, 0.9);
+        --skill-border: #2b6b55;
+        --nav-bg: rgba(200, 230, 220, 0.9);
+        --nav-border: #2b6b55;
+        --accent: #2b8c6c;
+        --accent-light: #4f9e83;
+        --badge-bg: #b0e0d0;
+        --badge-border: #2b6b55;
+        --contact-border: #2b6b55;
+        --shadow-color: #b0c0b8;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -18,11 +60,12 @@
 
       body {
         font-family: "Space Grotesk", sans-serif;
-        background: #101f1a;
-        color: #d0e6dc;
+        background: var(--bg-primary);
+        color: var(--text-primary);
         line-height: 1.5;
         font-size: 15px;
         overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.2s ease;
       }
 
       #bg-canvas {
@@ -34,6 +77,35 @@
         z-index: 0;
         pointer-events: none;
         opacity: 0.5;
+        transition: opacity 0.3s ease;
+      }
+
+      /* Theme toggle button */
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 2rem;
+        z-index: 200;
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--accent);
+        color: var(--text-primary);
+        padding: 0.5rem 1.2rem;
+        border-radius: 40px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.05);
+        border-color: var(--accent-light);
+        box-shadow: 0 0 20px var(--accent);
       }
 
       nav {
@@ -43,18 +115,19 @@
         justify-content: center;
         gap: 3rem;
         padding: 1rem 2rem;
-        background: rgba(10, 25, 20, 0.85);
+        background: var(--nav-bg);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border-bottom: 1px solid #2b6b55;
+        border-bottom: 1px solid var(--nav-border);
         z-index: 100;
         flex-wrap: wrap;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
       }
 
       nav a {
         text-decoration: none;
         font-weight: 500;
-        color: #d0ecd9;
+        color: var(--text-primary);
         padding: 0.2rem 0;
         border-bottom: 2px solid transparent;
         transition: 0.2s;
@@ -63,34 +136,42 @@
       }
 
       nav a:hover {
-        border-bottom-color: #8fe3c2;
-        color: #ffffff;
+        border-bottom-color: var(--accent);
+        color: var(--accent-light);
       }
 
+      /* ----- SLIDING EFFECT FOR EACH SECTION ----- */
       section {
         position: relative;
         z-index: 10;
         min-height: 100vh;
         padding: 6rem 10% 3rem;
         opacity: 0;
-        transform: translateY(25px);
-        transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.3, 1),
-          transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+        transform: translateX(-30px);
+        transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1),
+          transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1),
+          background-color 0.3s ease;
+      }
+
+      section:nth-child(even) {
+        transform: translateX(30px);
       }
 
       section.show {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0);
       }
 
       h2 {
         font-size: 2.2rem;
         font-weight: 600;
-        color: #dcfae7;
+        color: var(--heading-color);
         margin-bottom: 2.5rem;
         position: relative;
         display: inline-block;
         letter-spacing: -0.02em;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
       }
 
       h2::after {
@@ -100,8 +181,14 @@
         left: 0;
         width: 70%;
         height: 4px;
-        background: linear-gradient(90deg, #6ed6b0, #a3f0da, transparent);
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--accent-light),
+          transparent
+        );
         border-radius: 4px;
+        transition: background 0.3s ease;
       }
 
       /* ----- HERO ----- */
@@ -109,14 +196,15 @@
         font-size: 3.4rem;
         font-weight: 700;
         line-height: 1.1;
-        color: #e5ffee;
+        color: var(--heading-color);
         max-width: 900px;
         letter-spacing: -0.02em;
         margin-bottom: 1rem;
+        transition: color 0.3s ease;
       }
 
       .hero .highlight {
-        background: linear-gradient(145deg, #a3f0da, #6ed6b0);
+        background: linear-gradient(145deg, var(--accent-light), var(--accent));
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -126,28 +214,41 @@
         font-size: 1.2rem;
         margin-top: 1.2rem;
         max-width: 700px;
-        color: #bde6d8;
-        border-left: 4px solid #6ed6b0;
+        color: var(--text-secondary);
+        border-left: 4px solid var(--accent);
         padding-left: 1.8rem;
+        transition: color 0.3s ease, border-color 0.3s ease;
       }
 
       .card {
         margin-top: 2rem;
         padding: 2rem 2.2rem;
-        background: rgba(20, 45, 35, 0.7);
+        background: var(--card-bg);
         backdrop-filter: blur(10px);
         border-radius: 24px 8px 24px 8px;
-        border: 1px solid #2e7b64;
-        box-shadow: 0 20px 30px -20px #030b08;
-        transition: 0.3s;
+        border: 1px solid var(--card-border);
+        box-shadow: 0 20px 30px -20px var(--shadow-color);
+        transition: 0.3s, background-color 0.3s ease, border-color 0.3s ease;
       }
 
       .card:hover {
-        border-color: #6ed6b0;
-        box-shadow: 0 0 25px -8px #6ed6b0;
+        border-color: var(--accent);
+        box-shadow: 0 0 25px -8px var(--accent);
       }
 
-      /* skills */
+      /* ----- FLOATING ANIMATION FOR SKILL TILES ----- */
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
       .skills-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -156,30 +257,148 @@
       }
 
       .skill-tile {
-        background: rgba(18, 45, 34, 0.9);
+        background: var(--skill-bg);
         padding: 1.5rem 1rem;
         border-radius: 24px 4px 24px 4px;
-        border: 1px solid #3f8b70;
-        transition: 0.2s;
+        border: 1px solid var(--skill-border);
+        transition: 0.3s;
         text-align: center;
+        animation: float 4s ease-in-out infinite;
+        backdrop-filter: blur(4px);
+      }
+
+      .skill-tile:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .skill-tile:nth-child(2) {
+        animation-delay: 0.5s;
+      }
+      .skill-tile:nth-child(3) {
+        animation-delay: 1s;
+      }
+      .skill-tile:nth-child(4) {
+        animation-delay: 1.5s;
+      }
+      .skill-tile:nth-child(5) {
+        animation-delay: 2s;
       }
 
       .skill-tile:hover {
-        transform: translateY(-3px);
-        border-color: #b3ffe0;
-        box-shadow: 0 0 20px -5px #6ed6b0;
+        transform: translateY(-3px) scale(1.02);
+        border-color: var(--accent-light);
+        box-shadow: 0 0 20px -5px var(--accent);
+        animation-play-state: paused;
       }
 
       .skill-tile h3 {
         font-size: 1.3rem;
         font-weight: 600;
-        color: #e3ffe8;
+        color: var(--heading-color);
         margin-bottom: 0.3rem;
       }
 
       .skill-tile p {
         font-size: 0.8rem;
-        color: #bde0d2;
+        color: var(--text-secondary);
+      }
+
+      /* soft skills */
+      .soft-skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .soft-skill-item {
+        background: var(--skill-bg);
+        padding: 1.8rem 1.5rem;
+        border-radius: 24px 4px 24px 4px;
+        border: 1px solid var(--skill-border);
+        text-align: center;
+        backdrop-filter: blur(4px);
+        transition: 0.3s;
+        animation: float 4.5s ease-in-out infinite;
+      }
+
+      .soft-skill-item:nth-child(1) {
+        animation-delay: 0.2s;
+      }
+      .soft-skill-item:nth-child(2) {
+        animation-delay: 0.7s;
+      }
+
+      .soft-skill-item:hover {
+        border-color: var(--accent-light);
+        transform: translateY(-3px);
+        box-shadow: 0 0 20px -5px var(--accent);
+        animation-play-state: paused;
+      }
+
+      .soft-skill-item h3 {
+        font-size: 1.5rem;
+        color: var(--heading-color);
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      .soft-skill-item p {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      /* EDUCATION SECTION */
+      .edu-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+
+      .edu-block {
+        background: var(--skill-bg);
+        backdrop-filter: blur(8px);
+        border-radius: 30px 6px 30px 6px;
+        padding: 1.8rem;
+        flex: 1 1 240px;
+        border: 1px solid var(--skill-border);
+        transition: 0.3s;
+      }
+
+      .edu-block:hover {
+        border-color: var(--accent-light);
+        box-shadow: 0 0 20px -5px var(--accent);
+        transform: translateY(-4px);
+      }
+
+      .edu-block h3 {
+        font-size: 1.5rem;
+        color: var(--heading-color);
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+
+      .edu-block .meta {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin: 0.4rem 0 0.6rem;
+      }
+
+      .edu-block .score {
+        background: var(--badge-bg);
+        display: inline-block;
+        padding: 0.3rem 1.2rem;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        color: var(--heading-color);
+        border: 1px solid var(--badge-border);
+      }
+
+      .edu-desc {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
       }
 
       /* projects */
@@ -191,23 +410,23 @@
       }
 
       .project-item {
-        background: rgba(18, 45, 35, 0.9);
+        background: var(--skill-bg);
         backdrop-filter: blur(5px);
         border-radius: 24px 6px 24px 6px;
         padding: 1.8rem;
-        border: 1px solid #3f8b70;
+        border: 1px solid var(--skill-border);
         transition: all 0.3s;
       }
 
       .project-item:hover {
-        border-color: #b0ffda;
-        box-shadow: 0 0 25px -8px #6ed6b0;
+        border-color: var(--accent-light);
+        box-shadow: 0 0 25px -8px var(--accent);
         transform: translateY(-4px);
       }
 
       .project-item h3 {
         font-size: 1.4rem;
-        color: #efffec;
+        color: var(--heading-color);
         margin-bottom: 0.8rem;
         font-weight: 600;
       }
@@ -215,18 +434,18 @@
       .project-detail {
         font-size: 0.9rem;
         line-height: 1.6;
-        color: #c0f0da;
+        color: var(--text-secondary);
       }
 
       .tech-badge {
-        background: #1e4a3a;
+        background: var(--badge-bg);
         padding: 0.2rem 1rem;
         border-radius: 30px;
         font-size: 0.75rem;
         display: inline-block;
         margin: 0.8rem 0.3rem 0 0;
-        color: #d0f2e0;
-        border: 1px solid #4f9e83;
+        color: var(--heading-color);
+        border: 1px solid var(--badge-border);
       }
 
       /* ----- CONTACT – minimal & professional ----- */
@@ -242,8 +461,8 @@
         align-items: center;
         gap: 1rem;
         font-size: 1rem;
-        color: #d0ecd9;
-        border-bottom: 1px dashed #2b6b55;
+        color: var(--text-primary);
+        border-bottom: 1px dashed var(--contact-border);
         padding-bottom: 0.8rem;
       }
 
@@ -253,26 +472,26 @@
 
       .contact-label {
         font-weight: 500;
-        color: #9feaca;
+        color: var(--text-secondary);
         min-width: 80px;
       }
 
       .contact-value {
-        color: #ffffff;
+        color: var(--heading-color);
         text-decoration: none;
         transition: color 0.2s;
         word-break: break-word;
       }
 
       .contact-value a {
-        color: #b7f5db;
+        color: var(--accent);
         text-decoration: none;
-        border-bottom: 1px dotted #4f9e83;
+        border-bottom: 1px dotted var(--badge-border);
       }
 
       .contact-value a:hover {
-        color: #ffffff;
-        border-bottom-color: #b3ffe0;
+        color: var(--accent-light);
+        border-bottom-color: var(--accent);
       }
 
       .linkedin-link {
@@ -283,13 +502,13 @@
 
       .linkedin-link:hover {
         transform: translateX(4px);
-        color: #ffffff;
+        color: var(--accent-light);
       }
 
       .footer-note {
         margin-top: 1.5rem;
         font-size: 0.9rem;
-        color: #9feaca;
+        color: var(--text-secondary);
         letter-spacing: 0.2px;
       }
 
@@ -312,15 +531,31 @@
           align-items: flex-start;
           gap: 0.3rem;
         }
+        .theme-toggle {
+          top: 0.8rem;
+          right: 1rem;
+          padding: 0.4rem 1rem;
+        }
       }
     </style>
   </head>
   <body>
     <canvas id="bg-canvas"></canvas>
 
+    <!-- Theme toggle button -->
+    <button
+      class="theme-toggle"
+      id="themeToggle"
+      aria-label="Switch between light and dark mode"
+    >
+      <span>🌓</span>
+      <span id="themeText">Light mode</span>
+    </button>
+
     <nav>
       <a href="#home">Home</a>
       <a href="#skills">Skills</a>
+      <a href="#education">Education</a>
       <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -335,15 +570,15 @@
         curiosity.
       </div>
       <div class="card">
-        <p style="font-size: 1rem; color: #d0f2e0">
+        <p style="font-size: 1rem">
           Exploring deep learning · open for entry‑level roles & collaborations
         </p>
       </div>
     </section>
 
-    <!-- SKILLS -->
+    <!-- SKILLS (technical + soft) -->
     <section id="skills">
-      <h2>technical skills</h2>
+      <h2>TECHNICAL SKILLS</h2>
       <div class="skills-grid">
         <div class="skill-tile">
           <h3>HTML/CSS</h3>
@@ -366,20 +601,60 @@
           <p>complex queries</p>
         </div>
       </div>
+
+      <h2 style="margin-top: 3rem">SOFT SKILLS</h2>
+      <div class="soft-skills-grid">
+        <div class="soft-skill-item">
+          <h3>LEADERSHIP</h3>
+          <p>
+            Guided project teams, mentored juniors, and coordinated group
+            efforts to deliver data-driven solutions on schedule.
+          </p>
+        </div>
+        <div class="soft-skill-item">
+          <h3>TEAMWORK</h3>
+          <p>
+            Collaborative mindset with experience in cross-functional teams,
+            agile workflows, and constructive peer feedback.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <!-- PROJECTS (3-4 lines each) -->
+    <!-- EDUCATION -->
+    <section id="education">
+      <h2>EDUCATION</h2>
+      <div class="edu-container">
+        <div class="edu-block">
+          <h3>GCE, Salem</h3>
+          <div class="meta">B.E. Computer Science</div>
+          <div class="score">CGPA 8.11</div>
+          <div class="edu-desc">
+            Data structures · algorithms · database systems · core programming
+          </div>
+        </div>
+        <div class="edu-block">
+          <h3>SPM HSS</h3>
+          <div class="meta">Kozhikalnatham</div>
+          <div class="score">HSC 91%</div>
+          <div class="edu-desc">
+            Mathematics · Computer Science · Merit student
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
     <section id="projects">
-      <h2>projects</h2>
+      <h2>PROJECTS</h2>
       <div class="project-grid">
-        <!-- stock LSTM -->
         <div class="project-item">
           <h3>📈 stock LSTM</h3>
           <div class="project-detail">
             Built a hybrid deep learning model combining LSTM for price
             prediction and NLP sentiment on financial news headlines. Achieved
             12% lower RMSE compared to baseline ARIMA. Deployed an interactive
-            dashboard to visualize sentiment vs price movement.
+            dashboard.
             <div>
               <span class="tech-badge">TensorFlow</span
               ><span class="tech-badge">NLP</span
@@ -387,14 +662,12 @@
             </div>
           </div>
         </div>
-        <!-- spotify -->
         <div class="project-item">
           <h3>🎵 spotify analytics</h3>
           <div class="project-detail">
             Analyzed 10k+ tracks using Spotipy API to find correlations between
             danceability, valence, and energy. Created interactive Plotly
-            visualizations showing trends across decades. Insights used for a
-            playlist recommendation mini‑tool.
+            visualizations showing trends across decades.
             <div>
               <span class="tech-badge">Spotipy</span
               ><span class="tech-badge">Plotly</span
@@ -402,14 +675,12 @@
             </div>
           </div>
         </div>
-        <!-- movie rating -->
         <div class="project-item">
           <h3>🎬 movie rating predictor</h3>
           <div class="project-detail">
             Developed a regression model to predict movie ratings using features
-            like budget, cast popularity, and release month. Engineered features
-            from metadata and achieved R² 0.71 with RandomForest. Compared
-            XGBoost and Ridge.
+            like budget, cast popularity, and release month. Achieved R² 0.71
+            with RandomForest.
             <div>
               <span class="tech-badge">scikit-learn</span
               ><span class="tech-badge">XGBoost</span
@@ -420,9 +691,9 @@
       </div>
     </section>
 
-    <!-- CONTACT – no icons, clean professional layout -->
+    <!-- CONTACT -->
     <section id="contact">
-      <h2>connect</h2>
+      <h2>CONNECT</h2>
       <div class="card">
         <div class="contact-item">
           <span class="contact-label">Email</span>
@@ -460,16 +731,45 @@
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (entry.isIntersecting) entry.target.classList.add("show");
+              if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+              }
             });
           },
-          { threshold: 0.15 }
+          { threshold: 0.2 }
         );
         sections.forEach((s) => observer.observe(s));
       })();
     </script>
 
-    <!-- dynamic background (subtle animation) -->
+    <!-- Theme switcher script -->
+    <script>
+      (function () {
+        const themeToggle = document.getElementById("themeToggle");
+        const themeText = document.getElementById("themeText");
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        htmlElement.setAttribute("data-theme", savedTheme);
+        updateButtonText(savedTheme);
+
+        themeToggle.addEventListener("click", () => {
+          const currentTheme = htmlElement.getAttribute("data-theme");
+          const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+          htmlElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          updateButtonText(newTheme);
+        });
+
+        function updateButtonText(theme) {
+          themeText.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+        }
+      })();
+    </script>
+
+    <!-- dynamic background (unchanged, adapts via CSS variables) -->
     <script>
       (function () {
         const canvas = document.getElementById("bg-canvas");
@@ -504,6 +804,7 @@
           ctx.clearRect(0, 0, width, height);
 
           let gradient = ctx.createLinearGradient(0, 0, width * 0.4, height);
+          // Use a neutral dark gradient that works in both themes (particles adapt)
           gradient.addColorStop(0, "#0f2420");
           gradient.addColorStop(1, "#1a3a30");
           ctx.fillStyle = gradient;
@@ -558,3 +859,4 @@
     <noscript>enable JS for dynamic background</noscript>
   </body>
 </html>
+
